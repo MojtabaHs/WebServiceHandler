@@ -18,10 +18,6 @@ open class JSONParsingManager: JSONParser {
     }
     
     open var jsonDecoder: JSONDecoder
-    
-    open func parseData<T: Decodable>(_ data: Data) throws -> T {
-        return try jsonDecoder.decode(T.self, from: data)
-    }
 }
 
 extension JSONParsingManager {

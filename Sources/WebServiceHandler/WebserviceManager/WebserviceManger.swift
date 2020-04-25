@@ -21,7 +21,7 @@ open class WebServiceManager: HTTPWebServiceHandler {
     open var requestHandler: HTTPRequestHandler
     open var responseHandler: HTTPResponseHandler
     
-    open func resumeDataTask<T: Decodable, U: Decodable>(
+    open func resumeDataTask<T: DataType, U: DataType>(
         urlRequestable: URLRequestable,
         success: @escaping (T?) -> Void = { _ in },
         failure: @escaping (U?, Error?) -> Void = { _, _ in }) throws -> URLSessionDataTask {

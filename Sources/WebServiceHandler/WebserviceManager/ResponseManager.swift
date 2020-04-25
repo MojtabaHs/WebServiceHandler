@@ -11,18 +11,18 @@
 
 import Foundation
 
-open class ResponseManager: HTTPResponseHandler {
+open class ResponseManager: HTTPResponseHandler {    
     
-    public init(jsonParser: JSONParser, responseAdapters: [ResponseAdapter] = []) {
-        self.jsonParser = jsonParser
+    public init(parser: Parser, responseAdapters: [ResponseAdapter] = []) {
+        self.parser = parser
         self.responseAdapters = responseAdapters
     }
     
-    open var jsonParser: JSONParser
+    open var parser: Parser
     open var responseAdapters: [ResponseAdapter]
 }
 
 extension ResponseManager {
     
-    public static let `default`: ResponseManager = ResponseManager(jsonParser: JSONParsingManager.default)
+    public static let `default`: ResponseManager = ResponseManager(parser: JSONParsingManager.default)
 }

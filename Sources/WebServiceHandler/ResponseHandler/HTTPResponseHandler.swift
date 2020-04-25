@@ -16,16 +16,16 @@ public protocol ResponseAdapter {
 }
 
 public protocol HTTPResponseHandler {
-    var jsonParser: JSONParser { get }
+    var parser: Parser { get }
     var responseAdapters: [ResponseAdapter] { get }
-    func handleResponse<T: Decodable, U: Decodable>(data: Data?, response: URLResponse?, error: Error?, success: @escaping (T?) -> Void, failure: @escaping (U?, Error?) -> Void)
+    func handleResponse<T: DataType, U: DataType>(data: Data?, response: URLResponse?, error: Error?, success: @escaping (T?) -> Void, failure: @escaping (U?, Error?) -> Void)
 }
 
 public extension HTTPResponseHandler {
     
-    var responseAdapters: [ResponseAdapter] { return [] }
+    var responseAdapters: [ResponseAdapter] { [] }
     
-    func handleResponse<T: Decodable, U: Decodable>(data: Data?, response: URLResponse?, error: Error?, success: @escaping (T?) -> Void, failure: @escaping (U?, Error?) -> Void) {
+    func handleResponse<T: DataType, U: DataType>(data: Data?, response: URLResponse?, error: Error?, success: @escaping (T?) -> Void, failure: @escaping (U?, Error?) -> Void) {
         
         let originalResponse = (data: data, response: response, error: error)
         
@@ -49,10 +49,10 @@ public extension HTTPResponseHandler {
 
         do {
             if isSuccess {
-                let result = try jsonParser.parseData(responseData, to: T.self)
+                let result = try parser.parseData(responseData, to: T.self)
                 return success(result)
             } else {
-                let result = try jsonParser.parseData(responseData, to: U.self)
+                let result = try parser.parseData(responseData, to: U.self)
                 return failure(result, error)
             }
         } catch {

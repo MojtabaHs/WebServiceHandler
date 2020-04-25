@@ -11,14 +11,12 @@
 
 import Foundation
 
-public protocol JSONParser {
+public protocol JSONParser: Parser {
     var jsonDecoder: JSONDecoder { get }
     func parseData<T: Decodable>(_ data: Data, to: T.Type) throws -> T
 }
 
 public extension JSONParser {
-        
-    func parseData<T: Decodable>(_ data: Data, to: T.Type) throws -> T {
-        return try jsonDecoder.decode(T.self, from: data)
-    }
+
+    func parseData<T: Decodable>(_ data: Data, to: T.Type) throws -> T { try jsonDecoder.decode(T.self, from: data) }
 }

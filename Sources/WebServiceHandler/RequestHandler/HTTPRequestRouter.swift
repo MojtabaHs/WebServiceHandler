@@ -17,7 +17,7 @@ public protocol URLRequestable {
 
 public protocol HTTPRequestRouter: URLRequestable {
     associatedtype URLParameters: Encodable
-    associatedtype Result: Decodable
+    associatedtype Result: Decodable & DataType
     
     var path: String { get }
     var urlParametersEncoder: JSONEncoder { get }
