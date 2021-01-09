@@ -41,10 +41,16 @@ public extension HTTPRequestRouter {
         let url = baseURL.appendingPathComponent(path)
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method
-        urlRequest.httpBody = try bodyParametersEncoder.encode(bodyParameters)
+        if let bodyParameters = bodyParameters {
+            urlRequest.httpBody = try bodyParametersEncoder.encode(bodyParameters)
+            if #available(iOS 13.0, *) {
+                precondition(urlRequest.httpMethod != "GET", "It is not allowed to add a body in GET request since iOS 13")
+                precondition(urlRequest.httpMethod != nil, "nil method considered GET and it is not allowed to add a body in GET request since iOS 13")
+            }
+        }
 
         guard let urlParameters = urlParameters else { return urlRequest }
-
+        // Append URL parameters
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             assertionFailure("Invalid URL")
             return urlRequest
