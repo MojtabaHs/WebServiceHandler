@@ -11,31 +11,49 @@
 
 import Foundation
 
-public protocol URLRequestable {
-    func urlRequest() throws -> URLRequest
-}
-
 public protocol HTTPRequestRouter: URLRequestable {
     associatedtype URLParameters: Encodable
+    associatedtype BodyParameters: Encodable
     associatedtype Result: Decodable & DataType
     
+    var baseURL: URL { get }
     var path: String { get }
+
     var urlParametersEncoder: JSONEncoder { get }
     var urlParameters: URLParameters? { get }
-    var baseURL: URL { get }
+
+    var bodyParameters: BodyParameters? { get }
+    var bodyParametersEncoder: JSONEncoder { get }
+
+    var method: String? { get }
 }
 
 public extension HTTPRequestRouter {
+    var urlParameters: Ignorable? { nil }
+    var bodyParameters: Ignorable? { nil }
+    
+    var method: String? { nil }
+}
+
+public extension HTTPRequestRouter {
+
     func urlRequest() throws -> URLRequest {
-                
         let url = baseURL.appendingPathComponent(path)
-        guard let urlParameters = urlParameters else { return URLRequest(url: url) }
-        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method
+        urlRequest.httpBody = try bodyParametersEncoder.encode(bodyParameters)
+
+        guard let urlParameters = urlParameters else { return urlRequest }
+
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             assertionFailure("Invalid URL")
-            return URLRequest(url: url)
+            return urlRequest
         }
         urlComponents.queryItems = try urlParametersEncoder.urlQueryItems(encodable: urlParameters)
-        return URLRequest(url: urlComponents.url ?? url)
+
+        var adaptedURLRequest = URLRequest(url: urlComponents.url ?? url)
+        adaptedURLRequest.httpBody = urlRequest.httpBody
+        adaptedURLRequest.httpMethod = urlRequest.httpMethod
+        return adaptedURLRequest
     }
 }
