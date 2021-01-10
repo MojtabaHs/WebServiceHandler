@@ -29,18 +29,11 @@ public protocol HTTPRequestRouter: URLRequestable {
 }
 
 public extension HTTPRequestRouter {
-    var urlParameters: Ignorable? { nil }
-    var bodyParameters: Ignorable? { nil }
-    
-    var method: String? { nil }
-}
-
-public extension HTTPRequestRouter {
 
     func urlRequest() throws -> URLRequest {
         let url = baseURL.appendingPathComponent(path)
         var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = method
+        urlRequest.httpMethod = method;
         if let bodyParameters = bodyParameters {
             urlRequest.httpBody = try bodyParametersEncoder.encode(bodyParameters)
             if #available(iOS 13.0, *) {
