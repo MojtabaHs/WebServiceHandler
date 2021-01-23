@@ -12,6 +12,7 @@
 import Foundation
 
 public protocol DataType: Decodable { }
+public typealias Parsable = DataType
 
 public protocol Parser {
     func parseData<T: DataType>(_ data: Data, to: T.Type) throws -> T

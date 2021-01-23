@@ -29,7 +29,7 @@ open class WebServiceManager: HTTPWebServiceHandler {
         try requestHandler.resumeDataTask(
             urlRequestable: urlRequestable,
             completionHandler: { (data, response, error) in
-                self.responseHandler.handleResponse(data: data, response: response, error: error, success: success, failure: failure)
+                self.responseHandler.handleResponse(request: try! urlRequestable.urlRequest(), data: data, response: response, error: error, success: success, failure: failure)
         })
     }
 }
