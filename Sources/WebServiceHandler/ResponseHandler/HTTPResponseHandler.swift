@@ -31,7 +31,7 @@ public extension HTTPResponseHandler {
 
         var adaptedResponse = originalResponse
         for adapter in responseAdapters {
-            adaptedResponse = adapter.adaptedResponse(request: request, data: data, response: response, error: error)
+            adaptedResponse = adapter.adaptedResponse(request: adaptedResponse.request, data: adaptedResponse.data, response: adaptedResponse.response, error: adaptedResponse.error)
         }
 
         // MARK: Adapt and check error
